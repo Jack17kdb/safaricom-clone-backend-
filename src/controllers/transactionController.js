@@ -6,6 +6,7 @@ import Account from '../models/accountModel.js';
 import { getAccessToken } from '../lib/daraja.js';
 import { getTimestamp, getPassword } from '../utils/mpesaHelpers.js';
 import logger from '../lib/logger.js';
+import formatNumber from '../utils/formatNumber.js';
 
 const initiateDeposit = async (req, res) => {
     const { number, amount } = req.body;
@@ -191,7 +192,14 @@ const handleB2CCallback = async (req, res) => {
 };
 
 const internalTransfer = async (req, res) => {
-    const { receiverId, amount } = req.body;
+    const { number, amount } = req.body;
+
+    const phoneNo = formatNumber(number);
+
+    const receiver = await User.findOne({phoneNo});
+    if(!receiver) return res.status(400).json({ message: "No User with the number found" });
+
+    const receiverId = receiver._id;
     const senderId = req.user._id;
 
     const session = await mongoose.startSession();

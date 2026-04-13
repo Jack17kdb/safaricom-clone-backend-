@@ -3,6 +3,7 @@ import User from '../models/userModel.js'
 import Account from '../models/accountModel.js'
 import logger from '../lib/logger.js'
 import generateToken from '../utils/generateToken.js'
+import formatNumber from '../utils/formatNumber.js'
 
 const register = async(req, res) => {
 	try{
@@ -21,8 +22,13 @@ const register = async(req, res) => {
                         return res.status(400).json({ message: "Password should not be less that 6 characters" });
                 }
 
+		const phoneNo = formatNumber(number);
+
 		const emailExists = await User.findOne({email});
 		if(emailExists) return res.status(400).json({ message: "Email already exists" });
+
+		const numExists = await User.findOne({phoneNo});
+		if(numExists) return res.status(400).json({ message: "Phone number already exists" });
 
 		const salt = await bcrypt.genSalt(10);
 		const hash = await bcrypt.hash(password, salt);
@@ -30,7 +36,7 @@ const register = async(req, res) => {
 		const newUser = await User.create({
 			email,
 			password: hash,
-			number
+			number: phoneNo
 		});
 
 		await generateToken(newUser._id, res);
