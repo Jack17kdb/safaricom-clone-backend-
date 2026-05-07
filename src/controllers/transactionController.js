@@ -104,7 +104,7 @@ const handleCallback = async (req, res) => {
 const initiateWithdrawal = async (req, res) => {
     const { amount, number } = req.body;
     const userId = req.user._id;
-    const fee = 10;
+    const fee = 0;
     const totalDeduction = Number(amount) + fee;
 
     try {
