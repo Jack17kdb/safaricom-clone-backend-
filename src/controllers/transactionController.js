@@ -7,6 +7,7 @@ import { getAccessToken } from '../lib/daraja.js';
 import { getTimestamp, getPassword } from '../utils/mpesaHelpers.js';
 import logger from '../lib/logger.js';
 import formatNumber from '../utils/formatNumber.js';
+import User from '../models/userModel.js';
 
 const initiateDeposit = async (req, res) => {
     const { number, amount } = req.body;
