@@ -197,7 +197,7 @@ const internalTransfer = async (req, res) => {
 
     const phoneNo = formatNumber(number);
 
-    const receiver = await User.findOne({phoneNo});
+    const receiver = await User.findOne({ number: phoneNo });
     if(!receiver) return res.status(400).json({ message: "No User with the number found" });
 
     const receiverId = receiver._id;
