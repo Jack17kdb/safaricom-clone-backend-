@@ -89,7 +89,7 @@ const handleCallback = async (req, res) => {
             transactionId: transaction._id,
             entryType: 'credit',
             accountBalance: account.balance
-        }], { session });
+        }], { session, ordered: true });
 
         await session.commitTransaction();
         logger.info({ receipt, userId: transaction.userId }, "Deposit Successful");
@@ -228,12 +228,12 @@ const internalTransfer = async (req, res) => {
             fee: 0,
             transactionType: 'transfer',
             status: 'completed'
-        }], { session });
+        }], { session, ordered: true });
 
         await Ledger.create([
             { accountId: senderAccount._id, transactionId: transaction[0]._id, entryType: 'debit', accountBalance: senderAccount.balance },
             { accountId: receiverAccount._id, transactionId: transaction[0]._id, entryType: 'credit', accountBalance: receiverAccount.balance }
-        ], { session });
+        ], { session, ordered: true });
 
         await session.commitTransaction();
         res.status(200).json({ message: "Transfer successful" });
